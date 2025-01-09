@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
 
 # Load the dataset
-file_path = 'C:\orision technologies internship\Housing.csv'
+file_path = 'https://github.com/AbdulRehaman6/TASK3ORISON/blob/main/Housing.csv'
 housing_data = pd.read_csv(file_path)
 
 # Separate features and target variable
