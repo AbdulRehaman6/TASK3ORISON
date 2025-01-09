@@ -42,7 +42,7 @@ st.subheader("Input House Features")
 input_data = {}
 
 for col in numerical_cols:
-    input_data[col] = st.number_input(f"Enter {col} (e.g., 1000 for area)", min_value=0, step=1)
+    input_data[col] = st.number_input(f"Enter {col} ", min_value=0, step=1)
 
 for col in categorical_cols:
     input_data[col] = st.selectbox(f"Select {col}", label_encoders[col].classes_)
