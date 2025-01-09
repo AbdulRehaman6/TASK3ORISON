@@ -10,7 +10,7 @@ file_path = 'Housing.csv'
 housing_data = pd.read_csv(file_path)
 
 # Separate features and target variable
-X = housing_data.drop(columns=['price'])
+x = housing_data.drop(columns=['price'])
 y = housing_data['price']
 
 # Identify categorical and numerical columns
@@ -22,11 +22,11 @@ numerical_cols = ['area', 'bedrooms', 'bathrooms', 'stories', 'parking']
 label_encoders = {}
 for col in categorical_cols:
     le = LabelEncoder()
-    X[col] = le.fit_transform(X[col])
+    x[col] = le.fit_transform(x[col])
     label_encoders[col] = le
 
 # Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
 # Initialize the Random Forest Regressor
 model = RandomForestRegressor(n_estimators=100, random_state=42)
@@ -41,19 +41,29 @@ st.title("House Price Prediction App")
 st.subheader("Input House Features")
 input_data = {}
 
+# Collect numerical inputs
 for col in numerical_cols:
-    input_data[col] = st.number_input(f"Enter {col} ", min_value=0, step=1)
+    input_data[col] = st.number_input(f"Enter {col}", min_value=0, step=1)
 
+# Collect categorical inputs
 for col in categorical_cols:
     input_data[col] = st.selectbox(f"Select {col}", label_encoders[col].classes_)
 
 # Transform input data into DataFrame
 input_df = pd.DataFrame([input_data])
+
+# Ensure the transformation of categorical variables using label encoders
 for col in categorical_cols:
     input_df[col] = label_encoders[col].transform(input_df[col])
 
+# Ensure input_df has the same column order as the model's training data
+input_df = input_df[model.feature_names_in_]
+
 # Predict and display result if button is clicked
 if st.button("Predict Price"):
-    prediction = model.predict(input_df)[0]
-    st.subheader("Predicted House Price")
-    st.write(f"₹ {prediction:,.2f}")
+    try:
+        prediction = model.predict(input_df)[0]
+        st.subheader("Predicted House Price")
+        st.write(f"₹ {prediction:,.2f}")
+    except Exception as e:
+        st.write(f"Error occurred: {str(e)}")
